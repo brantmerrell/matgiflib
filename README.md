@@ -29,4 +29,4 @@ For instance, executing
 ``python examples/gameoflife/gameoflife.py`` 
 produces the following GIF: 
 
-![Conway's Game of Life](https://github.com/dpmerrell/matgiflib/examples/gameoflife/conway.gif)
+![Conway's Game of Life](https://github.com/dpmerrell/matgiflib/blob/master/examples/gameoflife/conway.gif?raw=true)
