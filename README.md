@@ -24,7 +24,9 @@ Then install the Matgiflib package:
 * move into this directory
 * run ``python setup.py install``
 
-<!--Try running some of the examples! 
+Try running some of the examples! 
 For instance, executing
 ``python examples/gameoflife/gameoflife.py`` 
-produces the following GIF: -->
+produces the following GIF: 
+
+![Conway's Game of Life](https://github.com/dpmerrell/matgiflib/examples/gameoflife/conway.gif)
