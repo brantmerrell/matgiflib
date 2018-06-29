@@ -52,6 +52,7 @@ class Gif:
         self.filename = filename
         self.width = width
         self.height = height
+        self.max_frames = max_frames
 
         # Store the keyword arguments for later, 
         # when we construct frames
@@ -60,15 +61,21 @@ class Gif:
         # This is the name of a temporary directory where we'll
         # keep intermediate stuff (e.g. frame images)
         self.tmp_dir = "__mgl_tmp__"
-        res = sp.call(["mkdir", self.tmp_dir])
-        if res != 0:
-            print("Error: unable to make temporary directory at {}".format(self.tmp_dir))
-            raise OSError 
+        if not os.path.exists(self.tmp_dir):
+            res = sp.call(["mkdir", self.tmp_dir])
+            if res != 0:
+                print("Error: unable to make temporary directory at {}".format(self.tmp_dir))
+                raise OSError 
+        else: # If the temporary directory already exists, make sure it's empty
+            sp.call("rm {}".format(os.path.join(self.tmp_dir,"*")), shell=True)
 
         # Set some other attributes that allow this class
         # to do its job
-        self.prefix = os.path.join(tmp_dir,fname)
-        self.suffix = frame_suff 
+
+        self.file_basename = os.path.basename(self.filename)
+
+        self.tmp_prefix = os.path.join(self.tmp_dir,self.file_basename.split('.')[0])
+        self.tmp_suffix = frame_suff 
         self.frame_count = 0   # keep track of the number of frames
         self.in_scope = False  # are we currently making a frame?
         self.current_frame = None        # This will store the figure we are currently building
@@ -114,7 +121,7 @@ class Gif:
 
         :return: nothing
         """
-        if self.in_scope = False:
+        if not self.in_scope: 
             print("The Gif object for {} has encountered 'end_frame' twice\
                    without an intervening 'start_frame'".format(self.filename))
             raise SyntaxError
@@ -123,11 +130,12 @@ class Gif:
         # Save the frame to the temporary directory
         count_width = str(int(math.log10(self.max_frames) + 1))
         label = "{:0>"+count_width+"d}"
-        file_path = "{}_{}{}".format(self.prefix, label, self.suffix)
+        label = label.format(self.frame_count)
+        file_path = "{}_{}{}".format(self.tmp_prefix, label, self.tmp_suffix)
         self.current_frame.savefig(file_path,**kwargs)
 
         # Close the figure
-        self.current_frame.close()
+        plt.close(self.current_frame)
         
         # Update some relevant attributes
         self.current_frame = None
@@ -143,12 +151,10 @@ class Gif:
         It creates the GIF and cleans up all temporary files
         """
 
-        sp.call(["convert", "{}_*".format(self.prefix),
-                            outfilename])
+        sp.call(["convert", "{}_*".format(self.tmp_prefix),
+                            self.filename])
 
-        sp.call("rm {}_*.png".format(self.prefix), shell=True)
-        sp.call(["rmdir {}".format(self.tmp_dir)])
+        sp.call("rm {}_*".format(self.tmp_prefix), shell=True)
+        sp.call(["rmdir", self.tmp_dir])
 
-        if save_history:
-            pkl.dump(self.history, open(history_file,"wb"))
 
