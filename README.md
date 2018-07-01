@@ -8,10 +8,9 @@ The idea is that
 * You specify _when_ and _how_ you want to visualize the program's state;
 * As the program executes, Matgiflib generates the frames of a GIF. When the program finishes, a GIF is compiled from the frames.
 
-This is NOT fancy GPU-powered or real-time visualization. 
-But it can be practical for python users who are familiar with Matplotlib and want to make neat little GIFs for blog posts, social media, presentations, etc.
-
-We try to introduce as little additional baggage as possible---your Matplotlib expertise gets you 99% of the way to making beautiful GIFs.
+We try to introduce as little additional baggage as possible---basic familiarity with Matplotlib's pyplot interface gets you 99% of the way to making beautiful GIFs. Contrast this with Matplotlib's native animation API, which is relatively complicated IMHO.
+ 
+I expect that this package will be most practical for python users who are familiar with Matplotlib and want to make neat little GIFs for blog posts, social media, presentations, etc.
 
 ## Installation
 Make sure you satisfy the following requirements:
