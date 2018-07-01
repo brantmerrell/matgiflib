@@ -71,9 +71,8 @@ class Gif:
 
         # Set some other attributes that allow this class
         # to do its job
-
+        self.stride = stride
         self.file_basename = os.path.basename(self.filename)
-
         self.tmp_prefix = os.path.join(self.tmp_dir,self.file_basename.split('.')[0])
         self.tmp_suffix = frame_suff 
         self.frame_count = 0   # keep track of the number of frames
@@ -95,6 +94,10 @@ class Gif:
 
         :return: fig, a Matplotlib figure object
         """
+
+        # Check whether we're supposed to make a frame on this iteration:
+        if self.frame_count % self.stride != 0:
+            return
 
         # Check whether we're already making a frame. 
         if self.in_scope:
@@ -121,11 +124,17 @@ class Gif:
 
         :return: nothing
         """
+        
+        # Check whether we're supposed to make a frame on this iteration:
+        if self.frame_count % self.stride != 0:
+            self.frame_count += 1
+            return
+
+        # Check whether we're still making another frame
         if not self.in_scope: 
             print("The Gif object for {} has encountered 'end_frame' twice\
                    without an intervening 'start_frame'".format(self.filename))
             raise SyntaxError
-
 
         # Save the frame to the temporary directory
         count_width = str(int(math.log10(self.max_frames) + 1))
@@ -139,8 +148,8 @@ class Gif:
         
         # Update some relevant attributes
         self.current_frame = None
-        self.frame_count += 1
         self.in_scope = False
+        self.frame_count += 1
 
         return
 
