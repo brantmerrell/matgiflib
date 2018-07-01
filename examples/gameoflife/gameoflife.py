@@ -9,7 +9,9 @@ import numpy as np
 def game_of_life(board_len=200, p=0.2, timesteps=200, random_seed=666):
     
     # Set the game's initial condition (randomly)
-    board = np.random.choice([0,1], p=[1.0-p, p], size=(board_len, board_len))
+    np.random.seed(random_seed)
+    board = np.random.choice([0,1], p=[1.0-p, p], 
+                             size=(board_len, board_len))
 
     # Construct the Gif object
     mygif = mgl.Gif("conway.gif", 4.0, 4.0, dpi=200)
